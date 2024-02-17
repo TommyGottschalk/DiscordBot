@@ -133,7 +133,7 @@ async def agents(ctx, arg): #function takes in an arg(user input for map)
             input_msg = await ctx.send("Would you like an agent from the META picks? 'y/n'")
             response = await bot.wait_for('message', check=lambda message: message.channel == ctx.channel)
             if response.content.lower() == 'y':
-                await ctx.send(f"Looks like you're playing {random.choice(mostPicked[arg_formatted])}") #make this a new variable that is declared below response
+                await ctx.send(f"Looks like you're playing {random.choice(meta)}") 
                 break
             elif response.content.lower() == 'n':
                 await ctx.send("Boring! Go play your comfort pick")
