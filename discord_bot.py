@@ -2,6 +2,7 @@
 
 import random
 import re
+import asyncio
 import os
 import discord
 from discord.ext import commands
@@ -163,8 +164,16 @@ async def cok(ctx, *, arg: str):
         if member.voice:
             channel = member.voice.channel
             print(f"Member {member.name} is in channel {channel.name}")
-            await channel.connect()
+            voice_client = await channel.connect()
             await ctx.send(f'Joined {channel.name}')
+
+             # Wait for 60 seconds
+            await asyncio.sleep(60)
+            
+            # Disconnect and cleanup
+            if voice_client.is_connected():
+                await voice_client.disconnect()
+                await ctx.send(f'Disconnected from {channel.name} after 60 seconds.')
         else:
             print(f"Member {member.name} is not in a voice channel!")
             await ctx.send(f'{member.name} is not in a voice channel!')
