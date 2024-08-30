@@ -1,6 +1,7 @@
 """State Bird and Valorant bot"""
 
 import random
+import re
 import os
 import discord
 from discord.ext import commands
@@ -90,27 +91,28 @@ async def bird(ctx, arg):
 valAgents = [
     'Astra', 'Breach', 'Brimstone', 'Chamber', 'Cypher', 'Deadlock', 'Fade', 'Gekko', 'Harbor', 'Iso',
     'Jett', 'KAY/O', 'Killjoy', 'Neon', 'Omen', 'Phoenix', 'Raze', 'Reyna', 'Sage', 'Skye',
-    'Sova', 'Viper', 'Yoru',
+    'Sova', 'Viper', 'Vyse', 'Yoru',
 ]
 
 
 valMaps = [
-    'Ascent', 'Bind', 'Breeze', 'Fracture', 'Haven',
+    'Abyss', 'Ascent', 'Bind', 'Breeze', 'Fracture', 'Haven',
     'Icebox', 'Lotus', 'Pearl', 'Split', 'Sunset',
 ]
 
 
 mostPicked = {
-        valMaps[0]: [valAgents[10], valAgents[20], valAgents[14], valAgents[12], valAgents[17]],
-        valMaps[1]: [valAgents[16], valAgents[2], valAgents[10], valAgents[19], valAgents[4]],
-        valMaps[2]: [valAgents[10], valAgents[21], valAgents[20], valAgents[4], valAgents[17]],
-        valMaps[3]: [None],
+        valMaps[0]: [None],
+        valMaps[1]: [valAgents[10], valAgents[20], valAgents[14], valAgents[12], valAgents[17]],
+        valMaps[2]: [valAgents[16], valAgents[2], valAgents[10], valAgents[19], valAgents[4]],
+        valMaps[3]: [valAgents[10], valAgents[21], valAgents[20], valAgents[4], valAgents[17]],
         valMaps[4]: [None],
-        valMaps[5]: [valAgents[10], valAgents[21], valAgents[17], valAgents[20], valAgents[12]],
-        valMaps[6]: [valAgents[16], valAgents[14], valAgents[10], valAgents[12], valAgents[17]],
-        valMaps[7]: [None],
-        valMaps[8]: [valAgents[10], valAgents[16], valAgents[4], valAgents[19], valAgents[14]],
-        valMaps[9]: [valAgents[4], valAgents[14], valAgents[10], valAgents[16], valAgents[6]],
+        valMaps[5]: [None],
+        valMaps[6]: [valAgents[10], valAgents[21], valAgents[17], valAgents[20], valAgents[12]],
+        valMaps[7]: [valAgents[16], valAgents[14], valAgents[10], valAgents[12], valAgents[17]],
+        valMaps[8]: [None],
+        valMaps[9]: [valAgents[10], valAgents[16], valAgents[4], valAgents[19], valAgents[14]],
+        valMaps[10]: [valAgents[4], valAgents[14], valAgents[10], valAgents[16], valAgents[6]],
     }
 
 
@@ -143,6 +145,32 @@ async def agents(ctx, arg): #function takes in an arg(user input for map)
     else:
         await ctx.send(f"I couldn't find the map {arg_formatted}, the map list is: {valMaps}")
 
+@bot.command(name='cok')
+async def cok(ctx, *, arg: str):
+    """Clutch or Kick!"""
+    # Extract member ID from mention (if provided)
+    mention_id = re.findall(r'\d+', arg)
+    
+    if mention_id:
+        member = ctx.guild.get_member(int(mention_id[0]))
+    else:
+        member = discord.utils.find(lambda m: m.name == arg or m.display_name == arg, ctx.guild.members)
+    
+    # Debug print to see what member was found
+    print(f"Found member: {member.name if member else 'None'}")
+    
+    if member:
+        if member.voice:
+            channel = member.voice.channel
+            print(f"Member {member.name} is in channel {channel.name}")
+            await channel.connect()
+            await ctx.send(f'Joined {channel.name}')
+        else:
+            print(f"Member {member.name} is not in a voice channel!")
+            await ctx.send(f'{member.name} is not in a voice channel!')
+    else:
+        print(f"Member '{arg}' not found!")
+        await ctx.send(f'Member "{arg}" not found!')
 
 bot.run(os.getenv("TOKEN"))
 
