@@ -31,11 +31,17 @@ COGS = [
     "cogs.trivia",
     "cogs.weather",
     "cogs.pokemon",
+    "cogs.minecraft",
+    "cogs.dog",
+    "cogs.advice",
+    "cogs.catfact",
+    "cogs.help",
 ]
 
 # ── Bot Setup ──────────────────────────────────────────────────────────────────
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='$', intents=intents)
+# help_command=None: cogs.help registers its own $help, replacing the default.
+bot = commands.Bot(command_prefix='$', intents=intents, help_command=None)
 
 
 @bot.event
